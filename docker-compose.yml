@@ -28,7 +28,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./task-frontend
       args:
         REACT_APP_BACKEND_URL: http://localhost:3500
     container_name: task-frontend
