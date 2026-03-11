@@ -33,12 +33,20 @@ async function initDB() {
 // });
 
 // below one is required when using in postgress docker image. if we are using local postgress db then username and password can be ignored. 
+// const pool = new Pool({
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   port: process.env.DB_PORT
+// });
+
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "mypassword",
+  database: process.env.DB_NAME || "tasksdb",
+  port: process.env.DB_PORT || 5432
 });
 
 
