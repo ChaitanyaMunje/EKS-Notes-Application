@@ -9,6 +9,8 @@ app.use(express.json());
 
 async function initDB() {
   try {
+    await pool.query("SELECT 1");
+    
     await pool.query(`
     CREATE TABLE IF NOT EXISTS tasks (
       id SERIAL PRIMARY KEY,
@@ -30,9 +32,12 @@ async function initDB() {
 //   port: 5432
 // });
 
+// below one is required when using in postgress docker image. if we are using local postgress db then username and password can be ignored. 
 const pool = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT
 });
 
