@@ -9,7 +9,7 @@ app.use(express.json());
 
 async function initDB() {
   try {
-    await pool.query("SELECT 1");
+    // await pool.query("SELECT 1");
     
     await pool.query(`
     CREATE TABLE IF NOT EXISTS tasks (
