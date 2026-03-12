@@ -34,7 +34,7 @@ services:
     build:
       context: ./task-frontend
       args:
-        REACT_APP_BACKEND_URL: http://98.94.58.174:3500
+        REACT_APP_BACKEND_URL: http://65.0.21.23:3500
     container_name: task-frontend
     restart: always
     ports:
