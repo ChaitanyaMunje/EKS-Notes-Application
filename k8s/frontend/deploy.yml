@@ -3,32 +3,33 @@ kind: Deployment
 metadata:
   name: frontend
   namespace: notes-app
-  labels:
-    role: frontend
-    env: demo
-spec: 
-  replicas: 1
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 25%
+
+spec:
+  replicas: 2
+
   selector:
-    matchLabels: 
-      role: frontend
+    matchLabels:
+      app: frontend
+
   template:
     metadata:
       labels:
-        role: frontend
-    spec: 
+        app: frontend
+
+    spec:
       imagePullSecrets:
       - name: ecr-registry-secret
+
       containers:
       - name: frontend
         image: 566849586744.dkr.ecr.ap-south-1.amazonaws.com/eks-notes-app-frontend:latest
-        imagePullPolicy: Always
-        env:
-          - name: REACT_APP_BACKEND_URL
-            value: "http://notes.techbfl.in/api/tasks"
+
         ports:
         - containerPort: 3000
+
+        env:
+        - name: REACT_APP_BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: frontend-config
+              key: REACT_APP_BACKEND_URL

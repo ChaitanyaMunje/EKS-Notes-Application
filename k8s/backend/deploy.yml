@@ -1,57 +1,59 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  name: api
+metadata:
+  name: backend
   namespace: notes-app
-  labels: 
-    role: api
-    env: demo
-spec: 
-  replicas: 1
-  strategy: 
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 25%
-  selector: 
+
+spec:
+  replicas: 2
+
+  selector:
     matchLabels:
-      role: api
+      app: backend
+
   template:
     metadata:
       labels:
-        role: api
-    spec: 
+        app: backend
+
+    spec:
       imagePullSecrets:
       - name: ecr-registry-secret
+
       containers:
-      - name: api
+      - name: backend
         image: 566849586744.dkr.ecr.ap-south-1.amazonaws.com/eks-notes-app-backend:latest
-        imagePullPolicy: Always
-        env:
-          - name: MONGO_CONN_STR
-            value: mongodb://mongodb-svc:27017/notes?directConnection=true
-          - name: MONGO_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: mongo-sec
-                key: username
-          - name: MONGO_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mongo-sec
-                key: password
+
         ports:
         - containerPort: 3500
-        livenessProbe: 
-          httpGet:
-            path: /ok
-            port: 3500
-          initialDelaySeconds: 2
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /ok
-            port: 3500
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 1
+
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: DB_HOST
+
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: DB_PORT
+
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: DB_NAME
+
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
